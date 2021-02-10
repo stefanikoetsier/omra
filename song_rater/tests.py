@@ -1,3 +1,9 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 
-# Create your tests here.
+
+class HomeTestCase(TestCase):
+    def test_home_page(self):
+        c = Client()
+        response = c.get('/home')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Welcome to the homepage of Ordina Music Rater')
