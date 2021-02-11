@@ -28,10 +28,6 @@ def add_song(request):
     return render(request, 'song_rater/add_song.html', {'form': form})
 
 
-def save_song(request):
-    pass
-
-
 def song_added(request):
     return render(request, 'song_rater/song_added.html')
 
