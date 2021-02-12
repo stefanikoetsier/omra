@@ -9,7 +9,6 @@ def home(request):
 
 
 def add_song(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
         form = AddSongForm(request.POST)
 
@@ -20,7 +19,7 @@ def add_song(request):
             #  Add song to the database
             Song.objects.create(artist=artist, title=title)
 
-            return HttpResponseRedirect('/song_added')
+            return HttpResponseRedirect('/song-added')
 
     else:
         form = AddSongForm()
@@ -30,4 +29,3 @@ def add_song(request):
 
 def song_added(request):
     return render(request, 'song_rater/song_added.html')
-
