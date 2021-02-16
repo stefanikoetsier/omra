@@ -7,5 +7,3 @@ class SongAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Song, SongAdmin)
-
-
