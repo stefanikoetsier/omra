@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Song
+from .models import Song, Rating
 
 
 class HomeTestCase(TestCase):
@@ -28,4 +28,14 @@ class AddSongTestCase(TestCase):
 
     def test_add_song_incomplete_post(self):
         response = self.client.post('/add-song', {'artist': 'Orange'})
+        self.assertEqual(response.status_code, 200)
+
+
+class SongListTestCase(TestCase):
+    def setUp(self):
+        song = Song.objects.create(artist='Apple', title='Pie')
+        Rating.objects.create(song=song, rating=3)
+
+    def test_song_list(self):
+        response = self.client.get('/song-list')
         self.assertEqual(response.status_code, 200)
