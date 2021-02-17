@@ -20,12 +20,16 @@
     <tr>
         <th>Artist</th>
         <th>Title</th>
+        <th>Average Rating</th>
+        <th>Number of Ratings</th>
     </tr>
 
-    {% for song in object_list %}
+    {% for song in song_table %}
     <tr>
         <td>{{ song.artist }}</td>
         <td>{{ song.title }}</td>
+        <td>{{ song.avg_rating }}</td>
+        <td>{{ song.n_ratings }}</td>
     </tr>
     {% endfor %}
 
