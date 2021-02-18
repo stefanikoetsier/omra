@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.db.models import Avg
-from .models import Song, Rating
+from .models import Song
 
 
 def home(request):
@@ -23,10 +23,10 @@ class SongList(ListView):
 
         song_table = []
 
-        for song in Song.objects.all():
-            ratings = Rating.objects.filter(song=song)
+        for song in Song.objects.all().prefetch_related('ratings'):
+            ratings = song.ratings.all()
             n_ratings = ratings.count()
-            avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
+            avg_rating = ratings.aggregate(Avg('rating'))['rating__avg'] or '-'
 
             song_table.append({
                 'artist': song.artist,
