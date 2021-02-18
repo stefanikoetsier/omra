@@ -13,5 +13,5 @@ class Song(models.Model):
 
 
 class Rating(models.Model):
-    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField(validators=[MaxValueValidator(5)])
