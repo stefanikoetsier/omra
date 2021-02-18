@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import Song, Rating
+from .models import Song
 
 
 class HomeTestCase(TestCase):
@@ -34,8 +34,11 @@ class AddSongTestCase(TestCase):
 class SongListTestCase(TestCase):
     def setUp(self):
         song = Song.objects.create(artist='Apple', title='Pie')
-        Rating.objects.create(song=song, rating=3)
+        song.ratings.create(rating=3)
 
     def test_song_list(self):
         response = self.client.get('/song-list')
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Apple', count=1)
+        self.assertContains(response, 'Pie', count=1)
+        self.assertContains(response, '3', count=1)
