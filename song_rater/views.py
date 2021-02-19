@@ -25,14 +25,12 @@ class SongList(ListView):
 
         for song in Song.objects.all().prefetch_related('ratings'):
             ratings = song.ratings.all()
-            n_ratings = ratings.count()
-            avg_rating = ratings.aggregate(Avg('rating'))['rating__avg'] or '-'
 
             song_list.append({
                 'artist': song.artist,
                 'title': song.title,
-                'avg_rating': avg_rating,
-                'n_ratings': n_ratings,
+                'avg_rating': ratings.aggregate(Avg('rating'))['rating__avg'] or '-',
+                'n_ratings': ratings.count(),
             })
 
         context['song_list'] = song_list
