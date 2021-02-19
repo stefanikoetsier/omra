@@ -17,14 +17,18 @@
 <body>
     <table class="center">
     <caption>Songs</caption>
-    <tr>
-        <th>Artist</th>
-        <th>Title</th>
-        <th>Average Rating</th>
-        <th>Number of Ratings</th>
-    </tr>
 
-    {% for song in song_table %}
+    {% for song in song_list %}
+
+        {% if forloop.first %}
+        <tr>
+            <th>Artist</th>
+            <th>Title</th>
+            <th>Average Rating</th>
+            <th>Number of Ratings</th>
+        </tr>
+        {% endif %}
+
     <tr>
         <td>{{ song.artist }}</td>
         <td>{{ song.title }}</td>
