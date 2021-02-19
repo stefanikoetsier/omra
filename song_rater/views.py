@@ -21,21 +21,21 @@ class SongList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        song_table = []
+        song_list = []
 
         for song in Song.objects.all().prefetch_related('ratings'):
             ratings = song.ratings.all()
             n_ratings = ratings.count()
             avg_rating = ratings.aggregate(Avg('rating'))['rating__avg'] or '-'
 
-            song_table.append({
+            song_list.append({
                 'artist': song.artist,
                 'title': song.title,
                 'avg_rating': avg_rating,
                 'n_ratings': n_ratings,
             })
 
-        context['song_table'] = song_table
+        context['song_list'] = song_list
 
         return context
 
