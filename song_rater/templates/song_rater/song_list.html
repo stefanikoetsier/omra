@@ -35,6 +35,8 @@
         <td>{{ song.avg_rating }}</td>
         <td>{{ song.n_ratings }}</td>
     </tr>
+    {% empty %}
+    <li>No songs available yet. Try adding a new song :)</li>
     {% endfor %}
 
     </table>
