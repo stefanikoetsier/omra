@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<style>
+    th, td {
+        padding: 5px;
+        text-align: left;
+    }
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<head>
+    <meta charset="utf-8">
+    <title>Song List</title>
+</head>
+<body>
+    <table class="center">
+    <caption>Songs</caption>
+
+    {% for song in song_list %}
+
+        {% if forloop.first %}
+        <tr>
+            <th>Artist</th>
+            <th>Title</th>
+            <th>Average Rating</th>
+            <th>Number of Ratings</th>
+        </tr>
+        {% endif %}
+
+    <tr>
+        <td>{{ song.artist }}</td>
+        <td>{{ song.title }}</td>
+        <td>{{ song.avg_rating }}</td>
+        <td>{{ song.n_ratings }}</td>
+    </tr>
+    {% empty %}
+    <li>No songs available yet. Try adding a new song :)</li>
+    {% endfor %}
+
+    </table>
+</body>
+</html>
