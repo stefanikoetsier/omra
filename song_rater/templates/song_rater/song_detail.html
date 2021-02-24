@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+    p {
+        text-align: center;
+    }
+    th, td {
+        padding: 5px;
+        text-align: left;
+    }
+    .center {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    li {
+      text-align: center;
+    }
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table class="center">
+    <p>Artist  :  {{song.artist}}</p>
+    <p>Title   :  {{song.title}}</p>
+
+    {% for rating in rating_list %}
+
+        {% if forloop.first %}
+        <tr>
+            <th>Rating</th>
+            <th>Created</th>
+        </tr>
+        {% endif %}
+
+        <tr>
+            <td>{{rating.rating}}</td>
+            <td>{{rating.created}}</td>
+        </tr>
+        {% empty %}
+        <li>No ratings available yet. Try adding a new rating :)</li>
+    {% endfor %}
+    </table>
+</body>
+</html>

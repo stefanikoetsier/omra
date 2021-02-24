@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.db.models import Avg
 from .models import Song
 
@@ -27,6 +28,7 @@ class SongList(ListView):
             ratings = song.ratings.all()
 
             song_list.append({
+                'pk': song.pk,
                 'artist': song.artist,
                 'title': song.title,
                 'avg_rating': ratings.aggregate(Avg('rating'))['rating__avg'] or '-',
@@ -34,6 +36,25 @@ class SongList(ListView):
             })
 
         context['song_list'] = song_list
+
+        return context
+
+
+class SongDetailView(DetailView):
+    model = Song
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        rating_list = []
+
+        for rating in context['song'].ratings.all():
+            rating_list.append({
+                'created': rating.created,
+                'rating': rating.rating,
+            })
+
+        context['rating_list'] = rating_list
 
         return context
 
