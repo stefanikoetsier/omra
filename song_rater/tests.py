@@ -35,6 +35,24 @@ class AddSongTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+def add_song(artist: str, title: str) -> Song:
+    """Helper function to add a song to the database"""
+    return Song.objects.create(artist=artist, title=title)
+
+
+def add_rating(song: Song, rating: int) -> None:
+    """Helper function to add a rating for a song to the database"""
+    song.ratings.create(rating=rating)
+
+
+def add_song_and_rating(artist: str, title: str, rating: int) -> Song:
+    """Helper function to add a song and a rating for the same song"""
+    song = add_song(artist=artist, title=title)
+    add_rating(song=song, rating=rating)
+
+    return song
+
+
 class SongListTestCase(TestCase):
     def add_song_and_rating(self, artist, title, rating):  # Helper function
         song = Song.objects.create(artist=artist, title=title)
