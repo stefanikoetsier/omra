@@ -9,6 +9,9 @@
         margin-left: auto;
         margin-right: auto;
     }
+    li {
+      text-align: center;
+    }
 </style>
 <head>
     <meta charset="utf-8">
@@ -30,10 +33,10 @@
         {% endif %}
 
     <tr>
-        <td>{{ song.artist }}</td>
-        <td>{{ song.title }}</td>
-        <td>{{ song.avg_rating }}</td>
-        <td>{{ song.n_ratings }}</td>
+        <td><a href="{% url 'song_rater:song-detail' pk=song.pk %}" class="btn btn-primary">{{ song.artist }}</a></td>
+        <td><a href="{% url 'song_rater:song-detail' pk=song.pk %}" class="btn btn-primary">{{ song.title }}</a></td>
+        <td><a href="{% url 'song_rater:song-detail' pk=song.pk %}" class="btn btn-primary">{{ song.avg_rating }}</a></td>
+        <td><a href="{% url 'song_rater:song-detail' pk=song.pk %}" class="btn btn-primary">{{ song.n_ratings }}</a></td>
     </tr>
     {% empty %}
     <li>No songs available yet. Try adding a new song :)</li>
