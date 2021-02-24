@@ -7,7 +7,7 @@ class SongAdmin(admin.ModelAdmin):
 
 
 class RatingAdmin(admin.ModelAdmin):
-    list_display = ('song', 'rating',)
+    list_display = ('song', 'rating', 'created')
 
 
 admin.site.register(Song, SongAdmin)

@@ -16,3 +16,4 @@ class Rating(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1),
                                                           MaxValueValidator(5)])
+    created = models.DateTimeField(auto_now_add=True)
