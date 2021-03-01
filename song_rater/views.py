@@ -1,9 +1,13 @@
 from django.shortcuts import render
+from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic import FormView
+from django.views.generic.detail import SingleObjectMixin
 from django.db.models import Avg
-from .models import Song
+from django.urls import reverse
+from .models import Song, RatingForm
 
 
 def home(request):
@@ -40,23 +44,46 @@ class SongList(ListView):
         return context
 
 
-class SongDetailView(DetailView):
+class SongDisplay(DetailView):
     model = Song
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        rating_list = []
-
-        for rating in context['song'].ratings.all():
-            rating_list.append({
-                'created': rating.created,
-                'rating': rating.rating,
-            })
-
-        context['rating_list'] = rating_list
+        context['rating_list'] = context['song'].ratings.all()
+        context['form'] = RatingForm(initial={'post': self.object})
 
         return context
+
+
+class SongInterest(SingleObjectMixin, FormView):
+    template_name = 'song_rater/song_detail.html'
+    form_class = RatingForm
+    model = Song
+
+    def get_success_url(self):
+        return reverse('song_rater:song-detail', kwargs={'pk': self.object.pk})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        model_instance = form.save(commit=False)
+        model_instance.song = self.object
+        model_instance.save()
+
+        return super().form_valid(form)
+
+
+class SongDetail(View):
+
+    def get(self, request, *args, **kwargs):
+        view = SongDisplay.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        view = SongInterest.as_view()
+        return view(request, *args, **kwargs)
 
 
 def song_added(request):
