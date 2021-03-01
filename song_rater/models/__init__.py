@@ -1,1 +1,1 @@
-from .song import Song, Rating
+from .song import Song, Rating, RatingForm
