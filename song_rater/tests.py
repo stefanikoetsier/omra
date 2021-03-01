@@ -105,7 +105,7 @@ class SongListTestCase(TestCase):
 
         response = self.client.get('/song-list')
 
-        for value in {*test_values_1.values(), *test_values_2.values()}:  # loop over all test values
+        for value in {*test_values_1.values(), *test_values_2.values()}:
             with self.subTest():
                 self.assertContains(response, value)
 
