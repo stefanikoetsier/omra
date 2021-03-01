@@ -99,3 +99,34 @@ class SongDetailTestCase(TestCase):
 
         for rating in ratings:
             self.assertContains(response, rating)
+
+
+class AddRatingTestCase(TestCase):
+    def test_rating_form(self):
+        test_song = {
+            'artist': 'Papaya',
+            'title': 'Icecream',
+        }
+        song = add_song(**test_song)
+        ratings = np.random.randint(low=1, high=6, size=10)
+
+        for rating in ratings:
+            test_rating = {'rating': rating}
+            self.client.post(f'/{song.pk}', test_rating)
+
+        response = self.client.get(f'/{song.pk}', follow=True)
+
+        for rating in ratings:  # check if all randomly generated ratings exist
+            with self.subTest():
+                self.assertContains(response, rating)
+
+    def test_rating_form_invalid_rating(self):
+        test_song = {
+            'artist': 'Maracuya',
+            'title': 'Sueño',
+        }
+        song = add_song(**test_song)
+        test_rating = {'rating': 100}
+
+        response = self.client.post(f'/{song.pk}', test_rating, follow=True)
+        self.assertContains(response, 'No ratings available yet. Try adding a new rating')
