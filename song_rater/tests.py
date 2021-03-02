@@ -131,7 +131,7 @@ class SongDetailTestCase(TestCase):
         for rating in ratings:
             add_rating(song=test_song, rating=rating)
 
-        response = self.client.get(f'/song-list', follow=True)
+        response = self.client.get('/song-list')
         self.assertContains(response, np.mean(ratings))
 
         response = self.client.get(f'/{test_song.pk}', follow=True)
