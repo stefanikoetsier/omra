@@ -7,7 +7,8 @@ from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.db.models import Avg
 from django.urls import reverse
-from .models import Song, RatingForm
+from .models import Song
+from .forms import RatingForm
 
 
 def home(request):

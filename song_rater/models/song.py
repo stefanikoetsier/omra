@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import ModelForm
 
 
 class Song(models.Model):
@@ -28,9 +27,3 @@ class Rating(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='ratings')
     rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     created = models.DateTimeField(auto_now_add=True)
-
-
-class RatingForm(ModelForm):
-    class Meta:
-        model = Rating
-        fields = ('rating',)
