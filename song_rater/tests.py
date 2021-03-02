@@ -1,4 +1,6 @@
 from django.test import TestCase
+from django.urls import reverse
+
 from .models import Song
 import numpy as np
 
@@ -103,30 +105,23 @@ class SongDetailTestCase(TestCase):
 
 class AddRatingTestCase(TestCase):
     def test_rating_form(self):
-        test_song = {
-            'artist': 'Papaya',
-            'title': 'Icecream',
-        }
-        song = add_song(**test_song)
-        ratings = np.random.randint(low=1, high=6, size=10)
+        song = add_song(artist='Papaya', title='Icecream')
+        ratings = np.ones(shape=10, dtype=int) * 3
 
         for rating in ratings:
             test_rating = {'rating': rating}
-            self.client.post(f'/{song.pk}', test_rating)
+            self.client.post(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), test_rating)
 
-        response = self.client.get(f'/{song.pk}', follow=True)
+        stored_ratings = list(Song.objects.get(pk=song.pk).ratings.values_list('rating', flat=True))
 
-        for rating in ratings:  # check if all randomly generated ratings exist
-            with self.subTest():
-                self.assertContains(response, rating)
+        self.assertCountEqual(ratings, stored_ratings)
 
     def test_rating_form_invalid_rating(self):
-        test_song = {
-            'artist': 'Maracuya',
-            'title': 'Sueño',
-        }
-        song = add_song(**test_song)
+        song = add_song(artist='Maracuya', title='Sueño')
         test_rating = {'rating': 100}
 
-        response = self.client.post(f'/{song.pk}', test_rating, follow=True)
-        self.assertContains(response, 'No ratings available yet. Try adding a new rating')
+        self.client.post(reverse('song_rater:song-detail', kwargs={'pk': song.pk}),
+                         test_rating, follow=True)
+        stored_ratings = list(Song.objects.get(pk=song.pk).ratings.values_list('rating', flat=True))
+
+        self.assertCountEqual([], stored_ratings)
