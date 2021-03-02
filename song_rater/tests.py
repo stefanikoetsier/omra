@@ -29,14 +29,8 @@ def add_song_and_rating(artist: str, title: str, rating: int) -> Song:
 
 
 class AddSongTestCase(TestCase):
-    def setUp(self):
-        test_song = {
-            'artist': 'Apple',
-            'title': 'Pie'
-        }
-        add_song(**test_song)
-
     def test_add_song(self):
+        add_song(**{'artist': 'Apple', 'title': 'Pie'})
         song = Song.objects.get(artist='Apple')
         self.assertEqual(song.title, 'Pie')
 
