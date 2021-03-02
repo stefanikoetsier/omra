@@ -144,6 +144,9 @@ class SongDetailTestCase(TestCase):
         for rating in ratings:
             add_rating(song=test_song, rating=rating)
 
+        response = self.client.get(f'/song-list', follow=True)
+        self.assertContains(response, np.mean(ratings))
+
         response = self.client.get(f'/{test_song.pk}', follow=True)
         self.assertContains(response, test_song.artist, count=1)
         self.assertContains(response, test_song.title, count=1)
