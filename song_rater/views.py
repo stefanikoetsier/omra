@@ -1,10 +1,7 @@
 from django.shortcuts import render
-from django.views import View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, FormMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic import FormView
-from django.views.generic.detail import SingleObjectMixin
 from django.db.models import Avg
 from django.urls import reverse
 from .models import Song
@@ -45,8 +42,10 @@ class SongList(ListView):
         return context
 
 
-class SongDisplay(DetailView):
+class SongDetail(FormMixin, DetailView):
     model = Song
+    template_name = 'song_rater/song_detail.html'
+    form_class = RatingForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,18 +54,17 @@ class SongDisplay(DetailView):
 
         return context
 
-
-class SongInterest(SingleObjectMixin, FormView):
-    template_name = 'song_rater/song_detail.html'
-    form_class = RatingForm
-    model = Song
-
     def get_success_url(self):
         return reverse('song_rater:song-detail', kwargs={'pk': self.object.pk})
 
     def post(self, request, *args, **kwargs):
+        """Bind model instance to self.object for later use in other functions, and add form flow"""
         self.object = self.get_object()
-        return super().post(request, *args, **kwargs)
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
     def form_valid(self, form):
         model_instance = form.save(commit=False)
@@ -74,17 +72,6 @@ class SongInterest(SingleObjectMixin, FormView):
         model_instance.save()
 
         return super().form_valid(form)
-
-
-class SongDetail(View):
-
-    def get(self, request, *args, **kwargs):
-        view = SongDisplay.as_view()
-        return view(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        view = SongInterest.as_view()
-        return view(request, *args, **kwargs)
 
 
 def song_added(request):
