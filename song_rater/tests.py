@@ -45,11 +45,7 @@ class AddSongTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_add_song_post(self):
-        test_song = {
-            'artist': 'Strawberry',
-            'title': 'Shortcake'
-        }
-        self.client.post('/add-song', test_song)
+        self.client.post('/add-song', {'artist': 'Strawberry', 'title': 'Shortcake'})
         song = Song.objects.get(artist='Strawberry')
         self.assertEqual(song.title, 'Shortcake')
 
@@ -63,10 +59,7 @@ class AddSongTestCase(TestCase):
         self.assertContains(response, 'Song with this Title and Artist already exists')
 
     def test_add_song_incomplete_post(self):
-        incomplete_song = {
-            'artist': 'Orange'
-        }
-        response = self.client.post('/add-song', incomplete_song)
+        response = self.client.post('/add-song', {'artist': 'Orange'})
         self.assertEqual(response.status_code, 200)
 
 
