@@ -40,7 +40,8 @@ class AddSongTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_add_song_post(self):
-        self.client.post(reverse('song_rater:add-song'), {'artist': 'Strawberry', 'title': 'Shortcake'})
+        self.client.post(reverse('song_rater:add-song'),
+                         {'artist': 'Strawberry', 'title': 'Shortcake'})
 
         song = Song.objects.get(artist='Strawberry')
         self.assertEqual(song.title, 'Shortcake')
@@ -106,7 +107,8 @@ class SongDetailTestCase(TestCase):
             'title': 'Pie',
         }
         song = add_song(**test_song)
-        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}),
+                                   follow=True)
         self.assertContains(response, 'No ratings available yet. Try adding a new rating')
 
     def test_rating_list_one_rating(self):
@@ -116,7 +118,8 @@ class SongDetailTestCase(TestCase):
             'rating': 4,
         }
         song = add_song_and_rating(**test_values)
-        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}),
+                                   follow=True)
 
         for value in list(test_values.values()):  # loop over all test values
             with self.subTest():
@@ -136,7 +139,8 @@ class SongDetailTestCase(TestCase):
         response = self.client.get(reverse('song_rater:song-list'))
         self.assertContains(response, np.mean(ratings))
 
-        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}),
+                                   follow=True)
         self.assertContains(response, song.artist, count=1)
         self.assertContains(response, song.title, count=1)
 
