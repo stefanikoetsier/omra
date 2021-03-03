@@ -36,11 +36,12 @@ class AddSongTestCase(TestCase):
         self.assertEqual(song.title, 'Pie')
 
     def test_add_song_form(self):
-        response = self.client.get('/add-song')
+        response = self.client.get(reverse('song_rater:add-song'))
         self.assertEqual(response.status_code, 200)
 
     def test_add_song_post(self):
-        self.client.post('/add-song', {'artist': 'Strawberry', 'title': 'Shortcake'})
+        self.client.post(reverse('song_rater:add-song'), {'artist': 'Strawberry', 'title': 'Shortcake'})
+
         song = Song.objects.get(artist='Strawberry')
         self.assertEqual(song.title, 'Shortcake')
 
@@ -50,17 +51,17 @@ class AddSongTestCase(TestCase):
             'title': 'Muffin'
         }
         add_song(**test_song)
-        response = self.client.post('/add-song', test_song)
+        response = self.client.post(reverse('song_rater:add-song'), test_song)
         self.assertContains(response, 'Song with this Title and Artist already exists')
 
     def test_add_song_incomplete_post(self):
-        response = self.client.post('/add-song', {'artist': 'Orange'})
+        response = self.client.post(reverse('song_rater:add-song'), {'artist': 'Orange'})
         self.assertEqual(response.status_code, 200)
 
 
 class SongListTestCase(TestCase):
     def test_song_list_empty(self):
-        response = self.client.get('/song-list')
+        response = self.client.get(reverse('song_rater:song-list'))
         self.assertContains(response, 'No songs available yet. Try adding a new song')
 
     def test_song_list_one_song(self):
@@ -91,7 +92,7 @@ class SongListTestCase(TestCase):
         add_song_and_rating(**test_values_1)
         add_song_and_rating(**test_values_2)
 
-        response = self.client.get('/song-list')
+        response = self.client.get(reverse('song_rater:song-list'))
 
         for value in {*test_values_1.values(), *test_values_2.values()}:
             with self.subTest():
@@ -104,8 +105,8 @@ class SongDetailTestCase(TestCase):
             'artist': 'Apple',
             'title': 'Pie',
         }
-        test_song = add_song(**test_song)
-        response = self.client.get(f'/{test_song.pk}', follow=True)
+        song = add_song(**test_song)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
         self.assertContains(response, 'No ratings available yet. Try adding a new rating')
 
     def test_rating_list_one_rating(self):
@@ -114,8 +115,8 @@ class SongDetailTestCase(TestCase):
             'title': 'Muffin',
             'rating': 4,
         }
-        test_song = add_song_and_rating(**test_values)
-        response = self.client.get(f'/{test_song.pk}', follow=True)
+        song = add_song_and_rating(**test_values)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
 
         for value in list(test_values.values()):  # loop over all test values
             with self.subTest():
@@ -126,18 +127,18 @@ class SongDetailTestCase(TestCase):
             'artist': 'Lemon',
             'title': 'Meringue',
         }
-        test_song = add_song(**test_song)
-        ratings = np.random.randint(low=1, high=6, size=10)
+        song = add_song(**test_song)
+        ratings = np.ones(shape=3, dtype=int) * 3
 
         for rating in ratings:
-            add_rating(song=test_song, rating=rating)
+            add_rating(song=song, rating=rating)
 
-        response = self.client.get('/song-list')
+        response = self.client.get(reverse('song_rater:song-list'))
         self.assertContains(response, np.mean(ratings))
 
-        response = self.client.get(f'/{test_song.pk}', follow=True)
-        self.assertContains(response, test_song.artist, count=1)
-        self.assertContains(response, test_song.title, count=1)
+        response = self.client.get(reverse('song_rater:song-detail', kwargs={'pk': song.pk}), follow=True)
+        self.assertContains(response, song.artist, count=1)
+        self.assertContains(response, song.title, count=1)
 
         for rating in ratings:
             with self.subTest():
