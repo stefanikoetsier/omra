@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Song(models.Model):
@@ -16,7 +15,15 @@ class Song(models.Model):
 
 
 class Rating(models.Model):
+
+    RATING_CHOICES = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+    )
+
     song = models.ForeignKey(Song, on_delete=models.CASCADE, related_name='ratings')
-    rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1),
-                                                          MaxValueValidator(5)])
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES)
     created = models.DateTimeField(auto_now_add=True)

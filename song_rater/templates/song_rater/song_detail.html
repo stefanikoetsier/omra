@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <style>
+    form {
+    text-align : center;
+    }
+    button {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    }
     p {
         text-align: center;
     }
@@ -41,6 +49,12 @@
         {% empty %}
         <li>No ratings available yet. Try adding a new rating :)</li>
     {% endfor %}
+
+    <form method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Submit Vote</button>
+
+    </form>
     </table>
 </body>
 </html>
